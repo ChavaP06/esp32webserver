@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>ESP Wi-Fi Manager</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <script>
+    if(localStorage.getItem("OuterLogged") != "true"){
+      window.location.href = '/';
+    }
+
+
+    function loadXMLDoc() {
+      document.getElementById('submitBtn').setAttribute("disabled", "")
+      document.getElementById('submitBtn').setAttribute("style", "background-color: gray;")
+
+      var ssid = document.getElementById("ssid").value
+      var pass = document.getElementById("pass").value
+      var hostname = document.getElementById('hostname').value
+      // var mqttserver = document.getElementById('mqttserver').value
+      // var mqttport = document.getElementById('mqttport').value
+
+
+
+      var xhr = new XMLHttpRequest()
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState == 4) {
+          var response = xhr.responseText
+          if (response.includes('OK')) {
+            var ip = response.replace("OK", "")
+            doChangeIP(ssid, pass, hostname, ip)
+            //alert(ip)
+
+
+            // document.getElementsByTagName('body')[0].innerHTML = response;
+
+          } else if (response == "Please put input correctly.") {
+            alert(response)
+            document.getElementById('submitBtn').removeAttribute("disabled")
+            document.getElementById('submitBtn').removeAttribute("style")
+          } else if(response == "Could not connect. Please try again."){
+            alert("Could not connect. Please try again.")
+            document.getElementById('submitBtn').removeAttribute("disabled")
+            document.getElementById('submitBtn').removeAttribute("style")
+          }else{
+            if(response == ""){
+              alert("Error. Please try again.")
+            }else{
+              alert(String(response))
+            }
+     
+            document.getElementById('submitBtn').removeAttribute("disabled")
+            document.getElementById('submitBtn').removeAttribute("style")
+          }
+
+
+        }
+      }
+      var checkIPParams = "/checkIP?ssid=" + ssid + "&pass=" + pass + "&hostname=" + hostname
+      console.log(checkIPParams)
+      xhr.open("POST", checkIPParams, true)
+      xhr.send()
+      // doChangeIP()
+
+    }
+
+    function doChangeIP(ssid, pass, hostname, ip) {
+
+
+      var xhrChangeIP = new XMLHttpRequest()
+      xhrChangeIP.onreadystatechange = () => {
+        if (xhrChangeIP.readyState == 4) {
+          var response = xhrChangeIP.responseText
+
+          if(response=="no"){
+            alert("Could not connect. Please try again.")
+            document.getElementById('submitBtn').removeAttribute("disabled")
+            document.getElementById('submitBtn').removeAttribute("style")
+          }else{
+            document.getElementsByTagName('body')[0].innerHTML = response;
+          }
+       
+
+
+
+        }
+      }
+      var setIPParams = "/setIP?ssid=" + String(ssid) + "&pass=" + String(pass) + "&hostname=" + String(hostname) + 
+                        "&ip=" + ip
+      console.log(setIPParams)
+      xhrChangeIP.open("POST", setIPParams, true);
+      xhrChangeIP.send();
+    }
+  </script>
+</head>
+
+<body>
+  <div class="topnav">
+    <h1>ESP Wi-Fi Manager</h1>
+  </div>
+  <div class="content">
+    <div class="card-grid">
+      <div class="card">
+        <form action="/" method="POST" id="setWiFiOnManager" onsubmit="event.preventDefault(); loadXMLDoc()">
+          <p>
+          <div style="display: block;">
+            <div>
+              <label for="ssid" style="margin-right: 20%;">SSID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="text"
+                id="ssid" name="ssid">
+            </div>
+            <div>
+              <label for="pass" style="padding-right: 18%;">Password</label>
+              <input type="password" id="pass" name="pass">
+            </div>
+            <div>
+              <label for="hostname" style="padding-right: 12%;">Machine
+                Name</label>
+              <input type="text" id="hostname" name="hostname">
+            </div>
+            <!-- <div>
+              <label for="mqttserver" style="padding-right: 5%;">MQTT Broker Address</label>
+              <input type="text" id="mqttserver" name="mqttserver">
+            </div>
+            <div>
+              <label for="mqttport" style="padding-right: 17%;">MQTT Port</label>
+              <input type="text" id="mqttport" name="mqttport">
+            </div> -->
+
+
+            <!-- <div style="margin-top: 20px; margin-bottom: 20px; text-align: left; padding-left: 8%;">
+              <input type="checkbox" id="dhcpchecked" name="dhcpchecked" value="true" checked>
+              <input type="hidden" id="dhcpunchecked" name="dhcpunchecked" value="true">
+              <label for="flexCheckDefault">DHCP</label>
+            </div>
+            <div>
+              <label for="ip" id="ip-label" style="padding-right: 17%;">IP
+                Address</label>
+              <input type="text" id="ip" name="ip" value="192.168.100.143" class="form-control">
+            </div>
+            <div>
+              <label for="gateway" id="gateway-label" style="padding-right: 2%;">Default Gateway Address</label>
+              <input type="text" id="gateway" name="gateway" value="192.168.100.1" class="form-control">
+            </div>
+            <div>
+
+              <label for="subnet" id="subnetmask-label"style="padding-right: 15%;">Subnet
+                Mask</label>
+              <input type="text" id="subnetString" name="subnetString" value="255.255.255.0" class="form-control">
+            </div> 
+ -->
+
+
+
+          </div>
+
+
+
+
+
+
+
+
+
+          <input type="submit" value="Submit" id="submitBtn">
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

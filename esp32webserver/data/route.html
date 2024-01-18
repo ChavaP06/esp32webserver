@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>ESP Web Server</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="data:,">
+    <script type="text/javascript">
+        function doSomething() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/restartESP32", true);
+            xhr.send();
+        }
+        window.onload = doSomething;
+    </script>
+
+</head>
+
+<body>
+
+    Done. ESP will restart, connect to your router and go to IP address:
+    %REQUESTDHCPIP%
+    <br><br>
+    If connection could not be established or the desired IP address has already been assigned. <br>Please try reconnect
+    to ESP32 and go to IP address 192.168.4.1 again.
+</body>
+
+</html>
