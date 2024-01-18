@@ -1,5 +1,5 @@
 ESP32 with Web Server integration
-*includes
+
 - monitorable modbus
 - editable access point
 - modifiable port configs including baud rate, data bit, stop bit, parity bit, delay time(ms), slave address
